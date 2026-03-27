@@ -1,0 +1,1 @@
+sc create PaymentTerminalService binPath= "C:\Users\raivo\source\repos\rmos5\PaymentTerminalService\src\PaymentTerminalService.Host\bin\Debug\PaymentTerminalService.Host.exe" start= auto obj= "LocalSystem"

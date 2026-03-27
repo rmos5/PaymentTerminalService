@@ -1,0 +1,74 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36915.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentTerminalService.Model", "src\PaymentTerminalService.Model\PaymentTerminalService.Model.csproj", "{31D8469C-1479-4FB3-91E7-E06CB4E1498B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentTerminalService.Web", "src\PaymentTerminalService.Web\PaymentTerminalService.Web.csproj", "{7A91ACB4-1D30-41E7-9892-C820D0376617}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentTerminalService.Host", "src\PaymentTerminalService.Host\PaymentTerminalService.Host.csproj", "{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A275D462-7EA3-4683-AC35-2440F9D75ED9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		CONTRIBUTING.md = CONTRIBUTING.md
+		docs\diagram-abort.mmd = docs\diagram-abort.mmd
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{55A676DB-2622-49E6-8F3C-E765DF056FF7}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\install-service.ps1 = scripts\install-service.ps1
+		scripts\open-firewall.ps1 = scripts\open-firewall.ps1
+		scripts\sc-create-debug-service.cmd = scripts\sc-create-debug-service.cmd
+		scripts\uninstall-service.ps1 = scripts\uninstall-service.ps1
+		scripts\upgrade-assistant-paymentterminalservice.ps1 = scripts\upgrade-assistant-paymentterminalservice.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openapi", "openapi", "{7E16F807-DA24-4B8E-87F3-8EB14D0E98DB}"
+	ProjectSection(SolutionItems) = preProject
+		openapi\PaymentTerminalService.v1.openapi.yaml = openapi\PaymentTerminalService.v1.openapi.yaml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentTerminalService.Client", "src\PaymentTerminalService.Client\PaymentTerminalService.Client.csproj", "{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymenTerminalService.TestApp1", "src\PaymenTerminalService.TestApp1\PaymenTerminalService.TestApp1.csproj", "{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB56B5A6-8707-4E4D-8637-E4D070D59965}
+	EndGlobalSection
+EndGlobal
