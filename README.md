@@ -1,0 +1,111 @@
+# PaymentTerminalService
+
+## Overview
+PaymentTerminalService is a local, self-hosted Windows Service that exposes a REST API for POS systems to interact with payment terminals.  
+The service manages all terminal communication, safety, and recovery logic, while POS applications remain responsible for business workflow and user interaction.
+
+- **Single active terminal at a time**
+- **Sequential access only (no concurrent terminal control)**
+- **Service owns terminal communication and error recovery**
+- **POS/UI owns business workflow**
+- **Robust against POS restarts, user switching, and long-running operations**
+- **REST + OpenAPI-first contract**
+
+## Technology Stack
+- .NET Framework 4.6.2
+- C#
+- OWIN self-host (HttpListener)
+- JSON over HTTP
+- Windows Service (same executable can run as console)
+- OpenAPI/Swagger documentation
+- SimpleInjector for dependency injection
+
+## Solution Structure
+
+### Projects
+- **PaymentTerminalService.Model**  
+  Shared contracts: DTOs, enums, interfaces, base abstractions, OpenAPI-aligned models, and custom API exception types.
+  - `IPaymentTerminalSelector`: Interface for terminal discovery, selection, and access.
+  - DTOs: `TerminalCatalogResponse`, `SelectedTerminalResponse`, etc.
+  - Custom exceptions for API error handling.
+
+- **PaymentTerminalService.Host**  
+  Executable host:
+  - Runs as Windows Service or console
+  - Manages lifecycle, configuration, and API hosting (OWIN self-host)
+  - Implements all business logic, terminal catalog, selection, and error handling
+  - Registers and configures Web API controllers and global exception filter
+  - Entry point: `Program.cs`
+  - OWIN startup: `Startup.cs` (configures DI, routing, Swagger, filters)
+
+- **PaymentTerminalService.Web**  
+  Contains Web API controllers, global exception filter, and API abstractions.
+  - Controllers are registered and hosted by the Host project
+  - Contains reusable filters (e.g., `ApiExceptionFilter`) for consistent error handling
+
+### Repository Layout
+- `src/` – Solution projects
+- `docs/` – Documentation
+- `scripts/` – PowerShell install/uninstall/firewall scripts
+- `openapi/` – OpenAPI contract
+
+## API Contract
+The OpenAPI specification is the single source of truth:
+
+- `openapi/PaymentTerminalService.v1.openapi.yaml`
+
+It defines:
+- Endpoints
+- DTOs
+- Terminal status and state model
+- Error response structure and status codes
+
+## Configuration
+
+### Terminal Catalog
+- The terminal catalog and selection state are stored in `terminals.json` (matches the `TerminalCatalogResponse` schema).
+- Example:
+  ```json
+  {
+    "terminals": [
+      {
+        /* ... TerminalDescriptor ... */
+      }
+    ],
+    "selectedTerminalId": "YOMANI-001"
+  }
+  ```
+
+
+### Error Handling
+- All API errors are returned in a consistent format (`ErrorResponse`) with appropriate HTTP status codes (400, 404, 409, 500, etc.).
+- Global exception filter (`ApiExceptionFilter`) is registered in the Host project and implemented in the Web project.
+
+## Running Modes
+- **Console mode** – development and debugging
+- **Windows Service mode** – production use
+
+The same executable is used for both modes.
+
+## Deployment & LAN Access
+- For **loopback/localhost deployments** (default, e.g., `http://127.0.0.1:7777`), no firewall rule is required.
+- To allow **LAN access**, bind the service to a network interface (e.g., `http://0.0.0.0:7777` or your LAN IP) and open the required port in the Windows Firewall.
+- No IIS dependency is required, but the Web project can be retained for future IIS or advanced hosting scenarios.
+
+## Status
+- API surface and terminal providers are under active development.
+- All business logic, API hosting, and error handling are now unified in the Host project.
+
+## Contribution
+- Use the provided OpenAPI contract as the source of truth for all API changes.
+- Follow the coding standards and error handling patterns established in the solution.
+
+## Logging
+
+- The service writes logs to a configurable directory (default: `Logs`).
+- Log directory can be specified as a command-line argument when starting the service.
+- Logs include lifecycle events, errors, and diagnostic information for troubleshooting.
+
+---
+
+*For more details, see the OpenAPI contract and project source code.*

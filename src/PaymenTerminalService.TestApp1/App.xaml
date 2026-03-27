@@ -1,0 +1,14 @@
+﻿<!--
+    App.xaml
+    Application entry point for PaymentTerminalService.TestApp1.
+    Sets the startup window and provides a place for application-wide resources.
+-->
+<Application x:Class="PaymentTerminalService.TestApp1.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:PaymentTerminalService.TestApp1"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <!-- Application-wide resources go here -->
+    </Application.Resources>
+</Application>

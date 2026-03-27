@@ -1,0 +1,807 @@
+openapi: 3.0.3
+info:
+  title: PaymentTerminalService
+  version: 0.1.0
+  description: |
+    REST API for POS systems to interact with payment terminals.
+
+    Core invariants:
+    - One selected terminal at a time
+    - Sequential access (no concurrent operations)
+    - Service owns terminal communication, state, safety, recovery
+    - POS owns workflow and polling
+    - Polling-based REST (no push/events required)
+
+    Selection semantics:
+    - Selecting a terminal activates (creates/initializes) the vendor implementation instance.
+    - Selection can optionally apply initial settings atomically during activation.
+servers:
+  - url: http://127.0.0.1:7777
+    description: Localhost loopback
+
+tags:
+  - name: Terminals
+  - name: TerminalSelection
+  - name: TerminalSettings
+  - name: TerminalStatus
+  - name: TerminalSession
+  - name: Actions
+  - name: Prompts
+
+paths:
+  /terminals:
+    get:
+      tags: [Terminals]
+      summary: Discover terminals, available connections, and current selection
+      operationId: getTerminals
+      responses:
+        "200":
+          description: List of discovered terminals, their connection options, and the currently selected terminal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TerminalCatalogResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected:
+    get:
+      tags: [TerminalSelection]
+      summary: Get current selected terminal + connection
+      operationId: getSelectedTerminal
+      responses:
+        "200":
+          description: Selected terminal
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SelectedTerminalResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+    put:
+      tags: [TerminalSelection]
+      summary: Select terminal + connection (activates terminal implementation; may apply initial settings)
+      operationId: selectTerminal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SelectTerminalRequest"
+      responses:
+        "200":
+          description: Selected terminal updated and activated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SelectedTerminalResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "409":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/settings:
+    get:
+      tags: [TerminalSettings]
+      summary: Get settings for selected terminal/connection
+      operationId: getSelectedTerminalSettings
+      responses:
+        "200":
+          description: Settings payload
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TerminalSettings"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/status:
+    get:
+      tags: [TerminalStatus]
+      summary: Get the latest status result for the selected terminal
+      operationId: getSelectedTerminalStatus
+      responses:
+        "200":
+          description: Latest status result
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TerminalStatus"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/session:
+    get:
+      tags: [TerminalSession]
+      summary: Get current terminal session information (status history for current session, most recent first)
+      operationId: getSelectedTerminalSession
+      responses:
+        "200":
+          description: All status results for the current session (most recent first)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TerminalSessionResponse"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  # Actions
+
+  /terminals/selected/purchase:
+    post:
+      tags: [Actions]
+      summary: Start purchase (sequential)
+      operationId: startPurchase
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PurchaseRequest"
+      responses:
+        "200":
+          description: Operation accepted and started (poll status)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationAccepted"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "409":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/refund:
+    post:
+      tags: [Actions]
+      summary: Start refund (sequential)
+      operationId: startRefund
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RefundRequest"
+      responses:
+        "200":
+          description: Operation accepted and started (poll status)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationAccepted"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "409":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/reversal:
+    post:
+      tags: [Actions]
+      summary: Start reversal (sequential)
+      operationId: startReversal
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReversalRequest"
+      responses:
+        "200":
+          description: Operation accepted and started (poll status)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationAccepted"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "409":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/abort:
+    post:
+      tags: [Actions]
+      summary: Abort current transaction (if possible)
+      operationId: abortTransaction
+      responses:
+        "200":
+          description: Abort requested (poll status)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationAccepted"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "409":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/loyalty/activate:
+    post:
+      tags: [Actions]
+      summary: Activate loyalty detection session (poll status)
+      operationId: loyaltyActivate
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoyaltyActivateRequest"
+      responses:
+        "200":
+          description: Loyalty activate accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationAccepted"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "409":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/loyalty/deactivate:
+    post:
+      tags: [Actions]
+      summary: Deactivate loyalty detection session (poll status)
+      operationId: loyaltyDeactivate
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/BaseActionRequest"
+      responses:
+        "200":
+          description: Loyalty deactivate accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationAccepted"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "409":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/prompt:
+    post:
+      tags: [Prompts]
+      summary: Respond to an active prompt
+      operationId: respondToPrompt
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PromptResponseRequest"
+      responses:
+        "200":
+          description: Prompt response accepted (poll status)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationAccepted"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "409":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+  /terminals/selected/confirm:
+    post:
+      tags: [Actions]
+      summary: Notify service that the transaction was processed by the calling entity
+      operationId: confirmTransaction
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionConfirmRequest"
+      responses:
+        "200":
+          description: Confirmation accepted
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationAccepted"
+        "400":
+          $ref: "#/components/responses/ErrorResponse"
+        "404":
+          $ref: "#/components/responses/ErrorResponse"
+        "500":
+          $ref: "#/components/responses/ErrorResponse"
+
+components:
+  responses:
+    ErrorResponse:
+      description: Request-level error (invalid input / no terminal selected / busy / stale prompt / internal error)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+  schemas:
+    # Vendor-specific fields (free-form JSON object)
+    VendorPayload:
+      type: object
+      description: Vendor-specific fields
+      additionalProperties: true
+
+    # Monetary amount in minor units (e.g. 1210 = 12.10 EUR)
+    MoneyMinorUnits:
+      type: integer
+      format: int64
+      description: Monetary amount in minor units (e.g. 1210 = 12.10 EUR)
+      minimum: 0
+
+    IsoDateTime:
+      type: string
+      format: date-time
+      description: ISO 8601 timestamp
+
+    ErrorResponse:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: Stable machine-readable error code
+          example: Busy
+        message:
+          type: string
+          description: Human-readable error message
+          example: Another operation is in progress.
+        details:
+          type: object
+          additionalProperties: true
+
+    # Operations / status
+    OperationType:
+      type: string
+      description: >
+        Type of the currently active operation (or last completed operation).
+        Note that not every operation type is necessarily surfaced through polled terminal status.
+      enum:
+        - None
+        - Purchase
+        - Refund
+        - Reversal
+        - Abort
+        - LoyaltyActivate
+        - LoyaltyDeactivate
+        - PromptResponse
+
+    OperationResult:
+      type: object
+      description: Unified operation result container (vendor payload only). Used for payments and loyalty-only use cases.
+      required: [vendorPayload]
+      properties:
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+
+    # Discovery / selection
+    TerminalCatalogResponse:
+      type: object
+      required: [terminals]
+      properties:
+        terminals:
+          type: array
+          items:
+            $ref: "#/components/schemas/TerminalDescriptor"
+        selectedTerminalId:
+          type: string
+          nullable: true
+          description: The terminalId of the currently selected terminal
+
+    TerminalDescriptor:
+      type: object
+      required: [terminalId, vendor, connections, isLoyaltySupported]
+      properties:
+        terminalId:
+          type: string
+          description: Stable service-side terminal identity
+        displayName:
+          type: string
+        vendor:
+          type: string
+        model:
+          type: string
+        version:
+          type: string
+          description: Terminal or implementation version, when available
+        isLoyaltySupported:
+          type: boolean
+          description: True if the terminal supports loyalty operations
+        connections:
+          type: array
+          items:
+            $ref: "#/components/schemas/TerminalConnectionOption"
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+        selectedConnectionId:
+          type: string
+          nullable: true
+          description: The connectionId of the currently selected connection
+
+    TerminalConnectionOption:
+      type: object
+      required: [connectionId, connectionType, displayName]
+      properties:
+        connectionId:
+          type: string
+          description: Unique identifier for this connection option
+        connectionType:
+          $ref: "#/components/schemas/ConnectionType"
+        displayName:
+          type: string
+          description: Human-readable connection label
+        serial:
+          $ref: "#/components/schemas/SerialConnection"
+        tcp:
+          $ref: "#/components/schemas/TcpConnection"
+        bluetooth:
+          $ref: "#/components/schemas/BluetoothConnection"
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+
+    ConnectionType:
+      type: string
+      enum: [Serial, Tcp, Bluetooth]
+
+    SerialConnection:
+      type: object
+      required: [portName]
+      properties:
+        portName:
+          type: string
+          example: "COM3"
+
+    TcpConnection:
+      type: object
+      required: [host, port]
+      properties:
+        host:
+          type: string
+          example: "192.168.1.10"
+        port:
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 65535
+          example: 5555
+
+    BluetoothConnection:
+      type: object
+      required: [macAddress]
+      properties:
+        macAddress:
+          type: string
+          description: MAC address
+          example: "AA:BB:CC:DD:EE:FF"
+
+    SelectTerminalRequest:
+      type: object
+      required: [terminalId, connection]
+      description: |
+        Selects and activates a terminal implementation using the given connection.
+      properties:
+        terminalId:
+          type: string
+        connection:
+          $ref: "#/components/schemas/TerminalConnectionOption"
+        isLoyaltySupported:
+          type: boolean
+          description: Optional hint to indicate if loyalty operations should be supported (if the terminal supports it, this may influence the activation flow and/or selected connection)
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+
+    SelectedTerminalResponse:
+      type: object
+      required: [selected]
+      properties:
+        selected:
+          $ref: "#/components/schemas/SelectedTerminal"
+
+    SelectedTerminal:
+      type: object
+      required: [terminalId, vendor, connection]
+      properties:
+        terminalId:
+          type: string
+        vendor:
+          type: string
+        version:
+          type: string
+          description: Terminal or implementation version, when available
+        connection:
+          $ref: "#/components/schemas/TerminalConnectionOption"
+        selectedAt:
+          $ref: "#/components/schemas/IsoDateTime"
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+
+    # Settings
+    TerminalSettings:
+      type: object
+      description: Vendor-agnostic settings container
+      required: [vendorPayload]
+      properties:
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+
+    # Operations / status
+    OperationAccepted:
+      type: object
+      required: [operationId]
+      properties:
+        operationId:
+          type: string
+          description: Identifier for the accepted operation, for correlation with subsequent workflow, status, session, or diagnostics where applicable
+          example: "op_01HXYZ..."
+        message:
+          type: string
+          example: "Accepted."
+
+    TerminalSessionResponse:
+      type: object
+      required:
+        - sessionName
+        - statuses
+      properties:
+        sessionName:
+          type: string
+          description: Session identifier or storage key for the persisted session.
+        statuses:
+          type: array
+          items:
+            $ref: "#/components/schemas/TerminalStatus"
+
+    TerminalStatus:
+      type: object
+      required: [state, isConnected, lastResultIsFinal]
+      properties:
+        state:
+          $ref: "#/components/schemas/TerminalState"
+        previousState:
+          $ref: "#/components/schemas/TerminalState"
+        message:
+          type: string
+          description: Human-readable status for UI
+        isConnected:
+          type: boolean
+        lastResultIsFinal:
+          type: boolean
+        activeOperationId:
+          type: string
+          nullable: true
+        activeOperationType:
+          $ref: "#/components/schemas/OperationType"
+        clientReference:
+          type: string
+          nullable: true
+          description: POS correlation id (e.g. receipt id)
+        sessionName:
+          type: string
+          nullable: true
+          description: Storage key of the persisted session this status belongs to. Assigned after first persistence and carried on all subsequent statuses.
+        prompt:
+          $ref: "#/components/schemas/Prompt"
+        operationResult:
+          $ref: "#/components/schemas/OperationResult"
+        fault:
+          $ref: "#/components/schemas/FaultInfo"
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+          description: Optional vendor-specific diagnostic data attached to this status (e.g. terminal result code, reader state, environment flag).
+        updatedAt:
+          $ref: "#/components/schemas/IsoDateTime"
+
+    TerminalState:
+      type: string
+      description: Operational state of the terminal.
+      enum:
+        - Idle
+        - WaitingForUserAction
+        - TransactionInProgress
+        - AwaitingPrompt
+        - AwaitingResult
+        - Completed
+        - Aborted
+        - Error
+
+    # Prompt
+    Prompt:
+      type: object
+      description: A prompt message that must be answered by POS/UI
+      required: [promptId, message, yesNo]
+      properties:
+        promptId:
+          type: string
+          example: "pr_01HABC..."
+        message:
+          type: string
+          example: "Confirm PIN bypass?"
+        yesNo:
+          type: boolean
+          description: |
+            True when the prompt expects a yes/no decision (accept/decline).
+            False when the prompt expects free-form input.
+        input:
+          $ref: "#/components/schemas/PromptInputSpec"
+        createdAt:
+          $ref: "#/components/schemas/IsoDateTime"
+        expiresAt:
+          $ref: "#/components/schemas/IsoDateTime"
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+
+    PromptInputSpec:
+      type: object
+      description: Optional input guidance (applies when yesNo is false; may still be provided for UI hints)
+      properties:
+        kind:
+          type: string
+          enum: [None, Digits, Alphanumeric, Any]
+        minLength:
+          type: integer
+          format: int32
+          minimum: 0
+        maxLength:
+          type: integer
+          format: int32
+          minimum: 0
+        hint:
+          type: string
+
+    FaultInfo:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+          description: Vendor-agnostic or vendor-derived error code
+          example: "TerminalError"
+        message:
+          type: string
+          example: "Transaction interrupted."
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+
+    # Actions requests
+    BaseActionRequest:
+      type: object
+      properties:
+        clientReference:
+          type: string
+          description: POS correlation id (e.g. receipt id)
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+
+    PurchaseRequest:
+      allOf:
+        - $ref: "#/components/schemas/BaseActionRequest"
+        - type: object
+          required: [amount]
+          properties:
+            amount:
+              $ref: "#/components/schemas/MoneyMinorUnits"
+            currency:
+              type: string
+              description: ISO 4217 currency code (optional; service may default to EUR)
+              example: "EUR"
+            isLoyaltyHandled:
+              type: boolean
+              description: If true, indicates that loyalty is already handled and should be excluded from the purchase flow
+
+    RefundRequest:
+      allOf:
+        - $ref: "#/components/schemas/BaseActionRequest"
+        - type: object
+          required: [amount]
+          properties:
+            amount:
+              $ref: "#/components/schemas/MoneyMinorUnits"
+            currency:
+              type: string
+              description: ISO 4217 currency code (optional; service may default to EUR)
+              example: "EUR"
+
+    ReversalRequest:
+      allOf:
+        - $ref: "#/components/schemas/BaseActionRequest"
+        - type: object
+          required: [transactionId, timestamp]
+          properties:
+            transactionId:
+              type: string
+              description: Transaction id to reverse (format/vendor-specific)
+              example: "11038"
+            timestamp:
+              $ref: "#/components/schemas/IsoDateTime"
+              description: ISO 8601 timestamp of transaction to reverse (e.g. 2024-06-24T15:30:00Z)
+
+    LoyaltyActivateRequest:
+      allOf:
+        - $ref: "#/components/schemas/BaseActionRequest"
+        - type: object
+          properties:
+            mode:
+              type: string
+              enum: [Default, Autoreply]
+              description: Optional hint; vendor-specific behavior may vary
+
+    PromptResponseRequest:
+      type: object
+      description: |
+        Response to an active prompt.
+        - If answering a yes/no prompt: set `yesNo` to `true` or `false`.
+        - If answering an input prompt: provide `input`.
+      required: [promptId, yesNo]
+      properties:
+        promptId:
+          type: string
+        yesNo:
+          type: boolean
+          description: Response for yes/no prompts (true=yes/accept, false=no/decline)
+        input:
+          type: string
+          description: Response for input prompts (free-form text)
+        vendorPayload:
+          $ref: "#/components/schemas/VendorPayload"
+
+    TransactionConfirmRequest:
+      type: object
+      required: [accepted]
+      properties:
+        vendorPayload:
+          description: |
+            Optional vendor-specific fields. The well-known key recognized by the service:
+            - `sessionName` (string): storage key from `TerminalStatus.sessionName` in the
+              completed session status. Used to locate and rename the session file to
+              `.confirmed.ptss`. If absent, the service uses the current in-memory session name.
+          $ref: "#/components/schemas/VendorPayload"
+
