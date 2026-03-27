@@ -1,0 +1,371 @@
+﻿<!--
+    MainWindow.xaml
+    Main application window for PaymentTerminalService.TestApp1.
+    Provides UI for listing, selecting, and displaying payment terminals.
+    The UI disables all controls and shows a wait cursor when IsBusy is true.
+-->
+<Window x:Class="PaymentTerminalService.TestApp1.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:PaymentTerminalService.TestApp1"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
+        mc:Ignorable="d" Height="700" Width="900" WindowStartupLocation="CenterScreen">
+
+    <!-- Window title is composed from static resources -->
+    <Window.Title>
+        <MultiBinding StringFormat="{}{0} {1}">
+            <Binding Source="{x:Static local:AppStrings.AppTitle}"/>
+            <Binding Source="{x:Static local:AppStrings.AppVersion}"/>
+        </MultiBinding>
+    </Window.Title>
+
+    <Window.Resources>
+        <!-- InverseBooleanConverter: Used to invert IsBusy for IsEnabled binding -->
+        <local:InverseBooleanConverter x:Key="InverseBooleanConverter"/>
+
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="25"/>
+        </Style>
+
+        <Style x:Key="defaultButtonStyle" TargetType="{x:Type Button}">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="WrapWithOverflow" TextAlignment="Center"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <Style x:Key="defaultToggleButtonStyle" TargetType="{x:Type ToggleButton}">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Setter Property="Width" Value="100"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="ContentTemplate">
+                <Setter.Value>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextWrapping="WrapWithOverflow" TextAlignment="Center"/>
+                    </DataTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- Changes cursor to Wait when IsBusy is true -->
+    <Window.Style>
+        <Style TargetType="Window">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsBusy}" Value="True">
+                    <Setter Property="Cursor" Value="Wait"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
+
+    <TabControl Margin="5">
+        <TabItem Header="Terminal">
+            <!-- Main UI content -->
+            <Grid DataContext="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=local:MainWindow}}">
+                <Grid.Resources>
+                    <!-- Default margin for all GroupBoxes -->
+                    <Style TargetType="GroupBox">
+                        <Setter Property="Margin" Value="2"/>
+                    </Style>
+                </Grid.Resources>
+
+                <!-- Main UI is disabled when IsBusy is true -->
+                <Grid x:Name="MainContent" IsEnabled="{Binding IsBusy, Converter={StaticResource InverseBooleanConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Terminal selection and info -->
+                    <Grid>
+
+                        <!-- Terminal selector -->
+                        <GroupBox Header="Terminal selector">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition/>
+                                </Grid.RowDefinitions>
+
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Margin="5">
+                                        <ComboBox x:Name="terminalSelector"
+                                            ItemsSource="{Binding Path=PaymentTerminals}"
+                                            SelectedItem="{Binding SelectedTerminal}"
+                                            DisplayMemberPath="DisplayName"
+                                              IsEnabled="{Binding HasTerminals}"/>
+                                        <StackPanel DataContext="{Binding SelectedTerminal}">
+                                            <TextBlock Margin="0,5,0,0" Text="{Binding Vendor}" FontWeight="Bold"/>
+                                            <TextBlock Margin="0,5,0,0" Text="{Binding Model}" FontWeight="Bold"/>
+                                            <TextBlock Margin="0,5,0,0" Text="{Binding Version}" FontWeight="Bold"/>
+                                        </StackPanel>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1">
+                                        <StackPanel.Resources>
+                                            <Style TargetType="Button" BasedOn="{StaticResource defaultButtonStyle}"/>
+                                        </StackPanel.Resources>
+                                        <Button 
+                                            Content="{x:Static local:AppStrings.LoadTerminals}" 
+                                            Command="{Binding GetTerminalsCommand}"/>
+                                        <Button 
+                                            Content="{x:Static local:AppStrings.SelectTerminal}" 
+                                            Command="{Binding SelectTerminalCommand}"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <Grid Grid.Row="1" DataContext="{Binding SelectedTerminal}">
+
+                                    <Grid.Resources>
+                                        <!-- Serial Connection Template -->
+                                        <DataTemplate x:Key="SerialConnectionTemplate" DataType="{x:Type local:SerialConnectionContext}">
+                                            <StackPanel DataContext="{Binding SerialConnection}">
+                                                <TextBlock Text="Com port:"/>
+                                                <TextBox Text="{Binding PortName}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                        <!-- TCP Connection Template -->
+                                        <DataTemplate x:Key="TcpConnectionTemplate" DataType="{x:Type local:TcpConnectionContext}">
+                                            <Grid DataContext="{Binding TcpConnection}">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition/>
+                                                    <ColumnDefinition/>
+                                                </Grid.ColumnDefinitions>
+                                                <StackPanel>
+                                                    <TextBlock Text="Host:"/>
+                                                    <TextBox Text="{Binding Host}"/>
+                                                </StackPanel>
+                                                <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                                    <TextBlock Text="Port:"/>
+                                                    <TextBox Text="{Binding Port}"/>
+                                                </StackPanel>
+                                            </Grid>
+                                        </DataTemplate>
+                                        <!-- Bluetooth Connection Template -->
+                                        <DataTemplate x:Key="BluetoothConnectionTemplate" DataType="{x:Type local:BluetoothConnectionContext}">
+                                            <StackPanel DataContext="{Binding BluetoothConnection}">
+                                                <TextBlock Text="Mac address:"/>
+                                                <TextBox Text="{Binding MacAddress}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                        <DataTemplate x:Key="DefaultConnectionTemplate">
+                                            <StackPanel>
+                                                <TextBlock Text="Select a connection to see details."/>
+                                            </StackPanel>
+                                        </DataTemplate>
+
+                                        <local:ConnectionTemplateSelector x:Key="ConnectionTemplateSelector"
+                                            SerialTemplate="{StaticResource SerialConnectionTemplate}"
+                                            TcpTemplate="{StaticResource TcpConnectionTemplate}"
+                                            BluetoothTemplate="{StaticResource BluetoothConnectionTemplate}"
+                                            DefaultTemplate="{StaticResource DefaultConnectionTemplate}" />
+                                    </Grid.Resources>
+
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto" />
+                                        <RowDefinition MinHeight="100" Height="Auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+
+                                    <TabControl 
+                                        Grid.Row="1" 
+                                        Margin="0,5" Padding="10" VerticalContentAlignment="Center"
+                                        HorizontalContentAlignment="Center"
+                                        TabStripPlacement="Top"
+                                        ItemsSource="{Binding ConnectionContexts}" DisplayMemberPath="DisplayName"
+                                        SelectedItem="{Binding SelectedConnectionContext}"
+                                        ContentTemplateSelector="{StaticResource ConnectionTemplateSelector}">
+                                    </TabControl>
+
+                                    <TextBox Grid.Row="2" DataContext="{Binding RelativeSource={RelativeSource AncestorType=local:MainWindow}}" Text="{Binding TerminalStatusString, Mode=OneWay}" IsReadOnly="True" TextWrapping="WrapWithOverflow" VerticalScrollBarVisibility="Auto"/>
+                                </Grid>
+                            </Grid>
+                        </GroupBox>
+                    </Grid>
+
+                    <!-- Payment terminal  -->
+                    <GroupBox Grid.Column="1" Header="Payment terminal">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <WrapPanel>
+                                    <WrapPanel.Resources>
+                                        <Style TargetType="Button" BasedOn="{StaticResource defaultButtonStyle}"/>
+                                        <Style TargetType="ToggleButton" BasedOn="{StaticResource defaultToggleButtonStyle}"/>
+                                    </WrapPanel.Resources>
+                                    <Button 
+                                        Content="{x:Static local:AppStrings.GetSettings}" 
+                                        Command="{Binding GetTerminalSettingsCommand}"/>
+                                    <Button 
+                                        Content="{x:Static local:AppStrings.GetStatus}" 
+                                        Command="{Binding GetTerminalStatusCommand}"/>
+                                    <Button 
+                                        Content="{x:Static local:AppStrings.GetSession}" 
+                                        Command="{Binding GetTerminalSessionCommand}"/>
+                                    <Button 
+                                        Content="{x:Static local:AppStrings.Abort}" 
+                                        Command="{Binding AbortTransactionCommand}">
+                                        <Button.CommandParameter>
+                                            <sys:Boolean>False</sys:Boolean>
+                                        </Button.CommandParameter>
+                                    </Button>
+                                    <Button 
+                                        Content="{x:Static local:AppStrings.AbortForce}" 
+                                        Command="{Binding AbortTransactionCommand}">
+                                        <Button.CommandParameter>
+                                            <sys:Boolean>True</sys:Boolean>
+                                        </Button.CommandParameter>
+                                    </Button>
+                                    <Button 
+                                        Content="{x:Static local:AppStrings.Purchase}" 
+                                        Command="{Binding StartPurchaseCommand}"/>
+                                    <Button 
+                                        Content="{x:Static local:AppStrings.Reversal}" 
+                                        Command="{Binding StartReversalCommand}"/>
+                                    <Button 
+                                        Content="{x:Static local:AppStrings.Refund}" 
+                                        Command="{Binding StartRefundCommand}"/>
+                                    <Border BorderBrush="Gray" BorderThickness="0.5" VerticalAlignment="Stretch" IsEnabled="{Binding ElementName=loytaltySupportedSelector, Path=IsChecked}">
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,2,0">
+                                            <ToggleButton 
+                                                Content="{Binding ToggleLoyaltyCommandTitle}" d:Content="Loyalty start"
+                                                Command="{Binding ToggleLoyaltyCommand}"
+                                                IsChecked="{Binding IsLoyaltyActive, Mode=OneWay}"/>
+                                            <CheckBox VerticalAlignment="Center" Content="Auto reply" IsChecked="{Binding IsLoyaltyAutoRepy}" d:IsChecked="True"/>
+                                        </StackPanel>
+                                    </Border>
+                                </WrapPanel>
+                                <TextBlock Grid.Row="1" DataContext="{Binding LastOpearationAccepted}" Text="{Binding Message}"/>
+                            </Grid>
+
+                            <Grid Grid.Row="1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel>
+                                    <Label Content="Amount"/>
+                                    <TextBox Text="{Binding TransactionAmount}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                    <Label Content="Transaction ID"/>
+                                    <TextBox Text="{Binding TransactionId}"/>
+                                </StackPanel>
+                                <StackPanel Grid.Row="1">
+                                    <StackPanel.Resources>
+                                        <local:DateTimeIsoConverter x:Key="DateTimeIsoConverter"/>
+                                        <local:IsoDateTimeValidationRule x:Key="IsoDateTimeValidationRule"/>
+                                        <local:ValidationErrorTooltipConverter x:Key="ValidationErrorTooltipConverter"/>
+                                    </StackPanel.Resources>
+                                    <Label Content="Timestamp (2024-06-24T15:30:00Z)"/>
+                                    <TextBox x:Name="TimestampTextBox">
+                                        <TextBox.Text>
+                                            <Binding Path="TransactionTimestamp"
+                                                UpdateSourceTrigger="PropertyChanged"
+                                                Converter="{StaticResource DateTimeIsoConverter}">
+                                                <Binding.ValidationRules>
+                                                    <local:IsoDateTimeValidationRule/>
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
+                                    </TextBox>
+                                    <TextBlock Margin="2,0,0,0" Foreground="Red">
+                                        <TextBlock.Text>
+                                            <MultiBinding Converter="{StaticResource ValidationErrorTooltipConverter}">
+                                                <Binding ElementName="TimestampTextBox" Path="(Validation.Errors)" />
+                                                <Binding ElementName="TimestampTextBox" Path="Text" />
+                                            </MultiBinding>
+                                        </TextBlock.Text>
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Grid.Column="1" Grid.Row="1" Margin="5,0,0,0">
+                                    <Label Content="Client reference"/>
+                                    <TextBox Text="{Binding ClientReference}"/>
+                                </StackPanel>
+                                <CheckBox 
+                                    Grid.Row="2" 
+                                    x:Name="loytaltySupportedSelector" 
+                                    DataContext="{Binding SelectedTerminal}"  
+                                    IsChecked="{Binding IsLoyaltySupported}" d:IsChecked="True" 
+                                    Content="Loyalty supported"/>
+                                <CheckBox Grid.Row="2" Grid.Column="1" Margin="5,0,0,0" IsChecked="{Binding IsLoyaltyHandled}" Content="Loyalty handled" IsEnabled="{Binding ElementName=loytaltySupportedSelector, Path=IsChecked}"/>
+                            </Grid>
+
+                            <Grid Grid.Row="2">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Label Content="Terminal settings"/>
+                                    <TextBox Grid.Row="1" Text="{Binding TerminalSettingsString, Mode=OneWay}" IsReadOnly="True"/>
+                                </Grid>
+                                <Grid Grid.Column="1" Margin="5,0,0,0" DataContext="{Binding SelectedTerminal, Mode=OneWay}">
+                                    <Grid.Resources>
+                                        <local:VendorPayloadConverter x:Key="VendorPayloadConverter"/>
+                                    </Grid.Resources>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition/>
+                                    </Grid.RowDefinitions>
+                                    <Label Content="Vendor payload"/>
+                                    <TextBox 
+                                        Grid.Row="1" 
+                                        Text="{Binding VendorPayload, Converter={StaticResource VendorPayloadConverter}}"
+                                        AcceptsReturn="True"/>
+                                </Grid>
+                            </Grid>
+                        </Grid>
+                    </GroupBox>
+                </Grid>
+            </Grid>
+        </TabItem>
+        <TabItem Header="Log">
+            <!-- Log -->
+            <GroupBox Header="Log">
+                <ListBox ScrollViewer.HorizontalScrollBarVisibility="Disabled" ItemsSource="{Binding LogMessages}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding}" TextWrapping="WrapWithOverflow"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </GroupBox>
+        </TabItem>
+    </TabControl>
+</Window>

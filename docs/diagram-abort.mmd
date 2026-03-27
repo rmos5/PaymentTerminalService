@@ -1,0 +1,12 @@
+stateDiagram-v2
+    direction TB
+    [*] --> TransactionInProgress: StartPurchase / Refund / Reversal
+    TransactionInProgress --> AwaitingResult: Card inserted
+    TransactionInProgress --> AbortPending: Abort requested\n(device busy)
+    AwaitingResult --> AbortPending: Abort requested\n(device rejected / disconnected)
+    AwaitingResult --> Completed: Normal completion
+    AbortPending --> AbortPending: Retry on reconnect or state change
+    AbortPending --> Completed: Device accepted abort
+    AbortPending --> CompletedWithLateResult: Transaction completed\ndespite abort intent
+    Completed --> [*]
+    CompletedWithLateResult --> [*]

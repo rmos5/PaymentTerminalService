@@ -1,0 +1,119 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36915.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentTerminalService.Model", "src\PaymentTerminalService.Model\PaymentTerminalService.Model.csproj", "{31D8469C-1479-4FB3-91E7-E06CB4E1498B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentTerminalService.Web", "src\PaymentTerminalService.Web\PaymentTerminalService.Web.csproj", "{7A91ACB4-1D30-41E7-9892-C820D0376617}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentTerminalService.Host", "src\PaymentTerminalService.Host\PaymentTerminalService.Host.csproj", "{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{A275D462-7EA3-4683-AC35-2440F9D75ED9}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		CONTRIBUTING.md = CONTRIBUTING.md
+		docs\diagram-abort.mmd = docs\diagram-abort.mmd
+		LICENSE.txt = LICENSE.txt
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "openapi", "openapi", "{7E16F807-DA24-4B8E-87F3-8EB14D0E98DB}"
+	ProjectSection(SolutionItems) = preProject
+		openapi\PaymentTerminalService.v1.openapi.yaml = openapi\PaymentTerminalService.v1.openapi.yaml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentTerminalService.Client", "src\PaymentTerminalService.Client\PaymentTerminalService.Client.csproj", "{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}"
+EndProject
+Project("{930C7802-8A8C-48F9-8165-68863BCCD9DD}") = "PaymentTerminalService.Installer", "src\PaymentTerminalService.Installer\PaymentTerminalService.Installer.wixproj", "{01B2267A-FB99-4803-BE19-15D1A87AB3A5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "nuget", "nuget", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		src\PaymentTerminalService.Client\PaymentTerminalService.Client.nuspec = src\PaymentTerminalService.Client\PaymentTerminalService.Client.nuspec
+		src\PaymentTerminalService.Model\PaymentTerminalService.Model.nuspec = src\PaymentTerminalService.Model\PaymentTerminalService.Model.nuspec
+		readme-nuget.txt = readme-nuget.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{85E857EA-E997-4467-BE8E-9F8BFDB379DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymentTerminalService.Tests", "src\tests\PaymentTerminalService.Tests\PaymentTerminalService.Tests.csproj", "{540543AF-0956-44ED-B56B-FA8C67BB648C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PaymenTerminalService.TestApp1", "src\PaymenTerminalService.TestApp1\PaymenTerminalService.TestApp1.csproj", "{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Debug|x86.Build.0 = Debug|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Release|x86.ActiveCfg = Release|Any CPU
+		{31D8469C-1479-4FB3-91E7-E06CB4E1498B}.Release|x86.Build.0 = Release|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Debug|x86.Build.0 = Debug|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Release|x86.ActiveCfg = Release|Any CPU
+		{7A91ACB4-1D30-41E7-9892-C820D0376617}.Release|x86.Build.0 = Release|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Debug|x86.Build.0 = Debug|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Release|x86.ActiveCfg = Release|Any CPU
+		{26F4BBA5-7CD7-459E-B88F-482CDFBFF599}.Release|x86.Build.0 = Release|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Debug|x86.Build.0 = Debug|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Release|x86.ActiveCfg = Release|Any CPU
+		{CA7EABBE-B8F1-4AD8-A403-6C53BB67CEBF}.Release|x86.Build.0 = Release|Any CPU
+		{01B2267A-FB99-4803-BE19-15D1A87AB3A5}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{01B2267A-FB99-4803-BE19-15D1A87AB3A5}.Debug|Any CPU.Build.0 = Debug|x86
+		{01B2267A-FB99-4803-BE19-15D1A87AB3A5}.Debug|x86.ActiveCfg = Debug|x86
+		{01B2267A-FB99-4803-BE19-15D1A87AB3A5}.Debug|x86.Build.0 = Debug|x86
+		{01B2267A-FB99-4803-BE19-15D1A87AB3A5}.Release|Any CPU.ActiveCfg = Release|x86
+		{01B2267A-FB99-4803-BE19-15D1A87AB3A5}.Release|Any CPU.Build.0 = Release|x86
+		{01B2267A-FB99-4803-BE19-15D1A87AB3A5}.Release|x86.ActiveCfg = Release|x86
+		{01B2267A-FB99-4803-BE19-15D1A87AB3A5}.Release|x86.Build.0 = Release|x86
+		{540543AF-0956-44ED-B56B-FA8C67BB648C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{540543AF-0956-44ED-B56B-FA8C67BB648C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{540543AF-0956-44ED-B56B-FA8C67BB648C}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{540543AF-0956-44ED-B56B-FA8C67BB648C}.Debug|x86.Build.0 = Debug|Any CPU
+		{540543AF-0956-44ED-B56B-FA8C67BB648C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{540543AF-0956-44ED-B56B-FA8C67BB648C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{540543AF-0956-44ED-B56B-FA8C67BB648C}.Release|x86.ActiveCfg = Release|Any CPU
+		{540543AF-0956-44ED-B56B-FA8C67BB648C}.Release|x86.Build.0 = Release|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Debug|x86.Build.0 = Debug|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Release|x86.ActiveCfg = Release|Any CPU
+		{2D4851E5-6063-4CB0-AEDC-C7E031B2E2B8}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{540543AF-0956-44ED-B56B-FA8C67BB648C} = {85E857EA-E997-4467-BE8E-9F8BFDB379DD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB56B5A6-8707-4E4D-8637-E4D070D59965}
+	EndGlobalSection
+EndGlobal

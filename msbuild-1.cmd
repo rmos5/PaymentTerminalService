@@ -1,0 +1,1 @@
+msbuild src/paymentterminalservice.installer/paymentterminalservice.installer.wixproj /p:Configuration=Release /p:BuildProjectReferences=false

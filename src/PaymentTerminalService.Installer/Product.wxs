@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="{29BF93CF-4877-4626-A81E-FDB52AE8AE4A}" Name="PaymentTerminalService" Language="1033" Version="1.0.0.0" Manufacturer="rmsoft" UpgradeCode="ea557e8a-d02d-40b4-b524-db278bfd4c71">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade AllowDowngrades="yes" Schedule="afterInstallInitialize" />
+		<MediaTemplate EmbedCab="yes" />
+
+		<Feature Id="ProductFeature" Title="PaymentTerminalService" Level="1">
+			<ComponentGroupRef Id="ProductComponents" />
+		</Feature>
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="PROVERSAFOLDER" Name="ProVersa">
+				<Directory Id="INSTALLFOLDER" Name="PaymentTerminalService" />
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="ServiceComponents" Guid="{7E1DDAB3-5027-44DC-9E42-3EA2E7506869}">
+
+				<!-- Service executable -->
+				<File Id="ServiceExe" Source="$(var.PaymentTerminalService.Host.TargetPath)" KeyPath="yes" />
+				<File Id="HostExeConfig" Source="$(var.PaymentTerminalService.Host.TargetDir)PaymentTerminalService.Host.exe.config" />
+
+				<!-- Application -->
+				<File Id="ModelDll" Source="$(var.PaymentTerminalService.Host.TargetDir)PaymentTerminalService.Model.dll" />
+				<File Id="ModelXml" Source="$(var.PaymentTerminalService.Host.TargetDir)PaymentTerminalService.Model.xml" />
+				<File Id="WebDll" Source="$(var.PaymentTerminalService.Host.TargetDir)PaymentTerminalService.Web.dll" />
+				<File Id="WebXml" Source="$(var.PaymentTerminalService.Host.TargetDir)PaymentTerminalService.Web.xml" />
+
+				<!-- Resources -->
+				<File Id="OpenApiYaml" Source="$(var.PaymentTerminalService.Host.TargetDir)PaymentTerminalService.v1.openapi.yaml" />
+
+				<!-- Verifone -->
+				<File Id="VerifoneEcrDll" Source="$(var.PaymentTerminalService.Host.TargetDir)Verifone.ECRTerminal.dll" />
+
+				<!-- OWIN -->
+				<File Id="OwinDll" Source="$(var.PaymentTerminalService.Host.TargetDir)Owin.dll" />
+				<File Id="MsOwinDll" Source="$(var.PaymentTerminalService.Host.TargetDir)Microsoft.Owin.dll" />
+				<File Id="MsOwinXml" Source="$(var.PaymentTerminalService.Host.TargetDir)Microsoft.Owin.xml" />
+				<File Id="MsOwinHostDll" Source="$(var.PaymentTerminalService.Host.TargetDir)Microsoft.Owin.Host.HttpListener.dll" />
+				<File Id="MsOwinHostXml" Source="$(var.PaymentTerminalService.Host.TargetDir)Microsoft.Owin.Host.HttpListener.xml" />
+				<File Id="MsOwinHostingDll" Source="$(var.PaymentTerminalService.Host.TargetDir)Microsoft.Owin.Hosting.dll" />
+				<File Id="MsOwinHostingXml" Source="$(var.PaymentTerminalService.Host.TargetDir)Microsoft.Owin.Hosting.xml" />
+
+				<!-- Web API -->
+				<File Id="WebHttpDll" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Web.Http.dll" />
+				<File Id="WebHttpXml" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Web.Http.xml" />
+				<File Id="WebHttpOwinDll" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Web.Http.Owin.dll" />
+				<File Id="WebHttpOwinXml" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Web.Http.Owin.xml" />
+				<File Id="NetHttpFormattingDll" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Net.Http.Formatting.dll" />
+				<File Id="NetHttpFormattingXml" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Net.Http.Formatting.xml" />
+
+				<!-- JSON -->
+				<File Id="NewtonsoftDll" Source="$(var.PaymentTerminalService.Host.TargetDir)Newtonsoft.Json.dll" />
+				<File Id="NewtonsoftXml" Source="$(var.PaymentTerminalService.Host.TargetDir)Newtonsoft.Json.xml" />
+				<File Id="NewtonsoftBsonDll" Source="$(var.PaymentTerminalService.Host.TargetDir)Newtonsoft.Json.Bson.dll" />
+				<File Id="NewtonsoftBsonXml" Source="$(var.PaymentTerminalService.Host.TargetDir)Newtonsoft.Json.Bson.xml" />
+
+				<!-- Logging -->
+				<File Id="NLogDll" Source="$(var.PaymentTerminalService.Host.TargetDir)NLog.dll" />
+				<File Id="NLogXml" Source="$(var.PaymentTerminalService.Host.TargetDir)NLog.xml" />
+				<File Id="NLogTraceDll" Source="$(var.PaymentTerminalService.Host.TargetDir)NLog.Targets.Trace.dll" />
+				<File Id="NLogTraceXml" Source="$(var.PaymentTerminalService.Host.TargetDir)NLog.Targets.Trace.xml" />
+
+				<!-- DI -->
+				<File Id="SimpleInjectorDll" Source="$(var.PaymentTerminalService.Host.TargetDir)SimpleInjector.dll" />
+				<File Id="SimpleInjectorXml" Source="$(var.PaymentTerminalService.Host.TargetDir)SimpleInjector.xml" />
+				<File Id="SimpleInjectorWebApiDll" Source="$(var.PaymentTerminalService.Host.TargetDir)SimpleInjector.Integration.WebApi.dll" />
+				<File Id="SimpleInjectorWebApiXml" Source="$(var.PaymentTerminalService.Host.TargetDir)SimpleInjector.Integration.WebApi.xml" />
+				<File Id="SwashbuckleDll" Source="$(var.PaymentTerminalService.Host.TargetDir)Swashbuckle.Core.dll" />
+
+				<!-- BCL polyfills -->
+				<File Id="BuffersDll" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Buffers.dll" />
+				<File Id="BuffersXml" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Buffers.xml" />
+				<File Id="MemoryDll" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Memory.dll" />
+				<File Id="MemoryXml" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Memory.xml" />
+				<File Id="NumericsVectorsDll" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Numerics.Vectors.dll" />
+				<File Id="NumericsVectorsXml" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Numerics.Vectors.xml" />
+				<File Id="RuntimeCompilerDll" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
+				<File Id="RuntimeCompilerXml" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Runtime.CompilerServices.Unsafe.xml" />
+				<File Id="TasksExtensionsDll" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Threading.Tasks.Extensions.dll" />
+				<File Id="TasksExtensionsXml" Source="$(var.PaymentTerminalService.Host.TargetDir)System.Threading.Tasks.Extensions.xml" />
+
+				<!-- Registers the Windows service. Runs as LocalSystem with automatic startup. -->
+				<ServiceInstall
+					Id="ServiceInstall"
+					Name="PaymentTerminalService"
+					DisplayName="Payment Terminal Service"
+					Description="Handles communication with payment terminals."
+					Type="ownProcess"
+					Start="auto"
+					ErrorControl="normal"
+					Account="LocalSystem" />
+
+				<!-- Starts the service on install, stops it on both install and uninstall, and removes it on uninstall. -->
+				<ServiceControl
+					Id="ServiceControl"
+					Name="PaymentTerminalService"
+					Start="install"
+					Stop="both"
+					Remove="uninstall"
+					Wait="yes" />
+			</Component>
+		</ComponentGroup>
+	</Fragment>
+</Wix>
