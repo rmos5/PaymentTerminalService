@@ -1,0 +1,16 @@
+﻿<Project>
+  <PropertyGroup>
+    <!-- Semantic product version -->
+    <ProductMajor>1</ProductMajor>
+    <ProductMinor>0</ProductMinor>
+    <ProductPatch>0</ProductPatch>
+
+    <!-- Combined semantic version -->
+    <ProductVersion>
+      $(ProductMajor).$(ProductMinor).$(ProductPatch)
+    </ProductVersion>
+
+    <!-- Stable assembly compatibility version -->
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+  </PropertyGroup>
+</Project>

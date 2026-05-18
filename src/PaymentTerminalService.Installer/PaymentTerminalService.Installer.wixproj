@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" InitialTargets="EnsureWixToolsetInstalled" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\wix.3.14.1\build\wix.props" Condition="Exists('..\packages\wix.3.14.1\build\wix.props')" />
+  <Import Project="..\Version.props" Condition="Exists('..\Version.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
+    <MsiProductVersion Condition=" '$(MsiProductVersion)' == '' ">$(ProductMajor).$(ProductMinor).$(ProductPatch)</MsiProductVersion>
+    <ProductVersion>3.10</ProductVersion>
+    <ProjectGuid>01b2267a-fb99-4803-be19-15d1a87ab3a5</ProjectGuid>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputName>PaymentTerminalService.Installer.$(Platform)</OutputName>
+    <OutputType>Package</OutputType>
+    <DefineSolutionProperties>false</DefineSolutionProperties>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\$(Platform)\</IntermediateOutputPath>
+    <DefineConstants>Debug;InstallerPlatform=x86;Win64=no;ProgramFilesFolder=ProgramFilesFolder;MsiProductVersion=$(MsiProductVersion)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\$(Platform)\</IntermediateOutputPath>
+    <DefineConstants>InstallerPlatform=x86;Win64=no;ProgramFilesFolder=ProgramFilesFolder;MsiProductVersion=$(MsiProductVersion)</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\$(Platform)\</IntermediateOutputPath>
+    <DefineConstants>Debug;InstallerPlatform=x64;Win64=yes;ProgramFilesFolder=ProgramFiles64Folder;MsiProductVersion=$(MsiProductVersion)</DefineConstants>
+    <SuppressValidation>True</SuppressValidation>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+    <OutputPath>bin\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>obj\$(Configuration)\$(Platform)\</IntermediateOutputPath>
+    <DefineConstants>InstallerPlatform=x64;Win64=yes;ProgramFilesFolder=ProgramFiles64Folder;MsiProductVersion=$(MsiProductVersion)</DefineConstants>
+    <SuppressValidation>True</SuppressValidation>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Product.wxs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PaymentTerminalService.Host\PaymentTerminalService.Host.csproj">
+      <Name>PaymentTerminalService.Host</Name>
+      <Project>{26f4bba5-7cd7-459e-b88f-482cdfbff599}</Project>
+      <Private>True</Private>
+      <DoNotHarvest>True</DoNotHarvest>
+      <RefProjectOutputGroups>Binaries;Content;Satellites</RefProjectOutputGroups>
+      <RefTargetDir>INSTALLFOLDER</RefTargetDir>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(WixTargetsPath)" Condition=" '$(WixTargetsPath)' != '' " />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets" Condition=" '$(WixTargetsPath)' == '' AND Exists('$(MSBuildExtensionsPath32)\Microsoft\WiX\v3.x\Wix.targets') " />
+  <Target Name="EnsureWixToolsetInstalled" Condition=" '$(WixTargetsImported)' != 'true' ">
+    <Error Text="The WiX Toolset v3.11 build tools must be installed to build this project. To download the WiX Toolset, see https://wixtoolset.org/releases/v3.11/stable" />
+  </Target>
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them. For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\wix.3.14.1\build\wix.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\wix.3.14.1\build\wix.props'))" />
+  </Target>
+  <Target Name="EnsureVersionPropsImported" BeforeTargets="PrepareForBuild">
+    <Error Condition="!Exists('..\Version.props')" Text="Missing src\Version.props. Installer version cannot be calculated." />
+  </Target>
+  <PropertyGroup>
+    <VersionSourceRoot>$(MSBuildThisFileDirectory)..</VersionSourceRoot>
+    <PreBuildEvent>powershell -ExecutionPolicy Bypass -File "$(VersionSourceRoot)\Generate-VersionInfo.ps1" -SourceRoot "$(VersionSourceRoot)"</PreBuildEvent>
+  </PropertyGroup>
+</Project>

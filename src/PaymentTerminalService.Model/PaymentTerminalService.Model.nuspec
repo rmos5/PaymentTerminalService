@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>PaymentTerminalService.Model</id>
+    <version>1.0.0</version>
+    <title>PaymentTerminalService.Model</title>
+    <authors>raivo.mosona@gmail.com</authors>
+    <owners>rmsoft</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Defines shared model objects, interfaces, and abstractions for payment terminal operations and integration.</description>
+    <copyright>Copyright ©rmsoft 2025-2026</copyright>
+    <releaseNotes>
+v1.0.0 (2026-04-20)
+- Initial release of PaymentTerminalService.Model
+- Defines core interfaces and abstractions for payment terminal integration
+- Includes shared model objects for ECR terminal operations
+- Targets .NET Framework 4.6.2
+    </releaseNotes>
+  </metadata>
+</package>

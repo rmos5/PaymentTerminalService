@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
+     xmlns:bal="http://schemas.microsoft.com/wix/BalExtension">
+  <Bundle
+    Name="PaymentTerminalService"
+    Version="$(var.BundleVersion)"
+    Manufacturer="rmsoft"
+    UpgradeCode="2c7b8b1b-7916-4f73-a182-d88b9f31f3e4">
+
+    <BootstrapperApplicationRef Id="WixStandardBootstrapperApplication.RtfLicense">
+      <bal:WixStandardBootstrapperApplication
+        LicenseFile="License.rtf"
+        SuppressOptionsUI="yes" />
+    </BootstrapperApplicationRef>
+
+    <Chain>
+      <MsiPackage
+        Id="PaymentTerminalServiceMsi"
+        SourceFile="$(var.PaymentTerminalService.Installer.TargetPath)"
+        Compressed="yes"
+        DisplayInternalUI="yes"
+        Vital="yes" />
+    </Chain>
+  </Bundle>
+</Wix>

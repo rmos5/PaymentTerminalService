@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>PaymentTerminalService.Client</id>
+    <version>1.0.0</version>
+    <title>PaymentTerminalService.Client</title>
+    <authors>raivo.mosona@gmail.com</authors>
+    <owners>rmsoft</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Client library for communicating with the PaymentTerminalService over HTTP. Provides PaymentTerminalServiceManager, a high-level stateful manager that wraps the HTTP client and handles terminal status polling.</description>
+    <copyright>Copyright ©rmsoft 2025-2026</copyright>
+    <releaseNotes>
+v1.0.0 (2026-04-20)
+- Initial release of PaymentTerminalService.Client
+- Provides client-side communication with the PaymentTerminalService
+    </releaseNotes>
+  </metadata>
+</package>
