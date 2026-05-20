@@ -943,15 +943,7 @@ namespace PaymentTerminalService.Model
         {
             if (!disposed)
             {
-                try
-                {
-                    ReleaseAsync().GetAwaiter().GetResult();  // Block until terminal is released
-                }
-                catch (Exception ex)
-                {
-                    Trace.WriteLine($"{nameof(Dispose)}:\n{ex}", GetType().FullName);
-                }
-
+                // ReleaseAsync() must be awaited by the caller before Dispose().
                 Dispose(true);
                 GC.SuppressFinalize(this);
             }
