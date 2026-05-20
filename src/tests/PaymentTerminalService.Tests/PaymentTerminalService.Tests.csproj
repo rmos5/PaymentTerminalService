@@ -101,6 +101,7 @@
     </Compile>
     <Compile Include="Client\TerminalStatusPollerTests.cs" />
     <Compile Include="Model\ApiModelsEqualityTests.cs" />
+    <Compile Include="Model\PaymentTerminalStateMachineTests.cs" />
     <Compile Include="Model\CollectionEqualityTests.cs" />
     <Compile Include="Model\DictionaryPropertyExtensionsTests.cs" />
     <Compile Include="Model\FileSessionStorageProviderTests.cs" />
