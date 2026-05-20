@@ -179,6 +179,7 @@ namespace PaymentTerminalService.Host
             {
                 try
                 {
+                    // Async release is not possible here; callers should call ReleaseAsync() before disposal when possible.
                     disposableTerminal.Dispose();
                 }
                 catch (Exception ex)
@@ -526,20 +527,11 @@ namespace PaymentTerminalService.Host
                 {
                     try
                     {
-                        await previousTerminal.ReleaseAsync().ConfigureAwait(false);
+                        await ReleaseAndDisposeAsync(previousTerminal).ConfigureAwait(false);
                     }
                     catch (Exception ex)
                     {
                         Trace.WriteLine($"{nameof(SelectTerminalAsync)} release previous:\n{ex}", GetType().FullName);
-                    }
-
-                    try
-                    {
-                        previousTerminal.Dispose();
-                    }
-                    catch (Exception ex)
-                    {
-                        Trace.WriteLine($"{nameof(SelectTerminalAsync)} dispose previous:\n{ex}", GetType().FullName);
                     }
                 }
 
@@ -625,21 +617,22 @@ namespace PaymentTerminalService.Host
             if (terminalToRelease == null)
                 throw new ApiConflictException("No terminal is currently selected to release.");
 
+            return await ReleaseAndDisposeAsync(terminalToRelease).ConfigureAwait(false);
+        }
+
+        private async Task<OperationAccepted> ReleaseAndDisposeAsync(IPaymentTerminal terminal)
+        {
+            OperationAccepted result = null;
             try
             {
-                return await terminalToRelease.ReleaseAsync().ConfigureAwait(false);
+                result = await terminal.ReleaseAsync().ConfigureAwait(false);
             }
             finally
             {
-                try
-                {
-                    terminalToRelease.Dispose();
-                }
-                catch
-                {
-                    Trace.WriteLine($"Failed to dispose terminal: '{terminalToRelease?.TerminalId}'", GetType().FullName);
-                }
+                try { terminal.Dispose(); }
+                catch (Exception ex) { Trace.WriteLine($"{nameof(ReleaseAndDisposeAsync)} dispose:\n{ex}", GetType().FullName); }
             }
+            return result;
         }
 
         /// <summary>
