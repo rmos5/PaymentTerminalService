@@ -278,7 +278,7 @@ namespace PaymentTerminalService.Client
                         {
                             sessionCancellationTokenSource.Dispose();
 
-                            // Skip the final event when no poll has completed and there is no error —
+                            // Skip the final event when no poll has completed and there is no error ï¿½
                             // LatestStatus is null and the handler has nothing useful to act on.
                             var lstatus = LatestStatus;
                             if (lstatus != null || finalError != null)
@@ -316,9 +316,17 @@ namespace PaymentTerminalService.Client
                     LatestStatus = status;
                     count++;
 
-                    if (!sessionMaxPollCount.HasValue || count < sessionMaxPollCount.Value)
+                    bool isFinalState = status?.LastResultIsFinal == true;
+
+                    if (!isFinalState && (!sessionMaxPollCount.HasValue || count < sessionMaxPollCount.Value))
                     {
                         OnStatusReceived(status, false);
+                    }
+
+                    if (isFinalState)
+                    {
+                        stopReason = TerminalStatusPollStopReason.FinalStateReached;
+                        break;
                     }
 
                     if (sessionMaxPollCount.HasValue && count >= sessionMaxPollCount.Value)
@@ -353,7 +361,7 @@ namespace PaymentTerminalService.Client
 
             sessionCancellationTokenSource.Dispose();
 
-            // Skip the final event when no poll has completed and there is no error —
+            // Skip the final event when no poll has completed and there is no error ï¿½
             // LatestStatus is null and the handler has nothing useful to act on.
             var latestStatus = LatestStatus;
             if (latestStatus != null || finalError != null)
@@ -405,7 +413,7 @@ namespace PaymentTerminalService.Client
                 sessionCancellationTokenSource.Dispose();
             }
 
-            // Skip the final event when no poll has ever completed in this session —
+            // Skip the final event when no poll has ever completed in this session ï¿½
             // there is no lstatus to deliver and the handler has nothing useful to act on.
             var latestStatus = LatestStatus;
             if (latestStatus == null && error == null)
@@ -570,6 +578,11 @@ namespace PaymentTerminalService.Client
         /// <summary>
         /// Polling ended because an unexpected error occurred.
         /// </summary>
-        Faulted
+        Faulted,
+
+        /// <summary>
+        /// Polling ended because the terminal reported a final state.
+        /// </summary>
+        FinalStateReached
     }
 }
