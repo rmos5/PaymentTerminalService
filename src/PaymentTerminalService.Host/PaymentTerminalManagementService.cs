@@ -548,7 +548,8 @@ namespace PaymentTerminalService.Host
                 try
                 {
                     await newTerminal.TestConnectionAsync().ConfigureAwait(false);
-                    // We don't 
+                    // Attempt to clear any stale transaction left over from a prior session.
+                    // Failure is expected when the terminal is idle and is intentionally swallowed.
                     try
                     {
                         await newTerminal.AbortTransactionAsync(new AbortTransactionRequest { Force = false }).ConfigureAwait(false);
@@ -749,6 +750,8 @@ namespace PaymentTerminalService.Host
             {
                 restoredTerminal = CreateTerminalInstance(terminal, connection, isLoyaltySupported, vendorPayload);
                 await restoredTerminal.TestConnectionAsync().ConfigureAwait(false);
+                // Attempt to clear any stale transaction left over from a prior session.
+                // Failure is expected when the terminal is idle and is intentionally swallowed.
                 try
                 {
                     await restoredTerminal.AbortTransactionAsync(new AbortTransactionRequest { Force = false }).ConfigureAwait(false);
